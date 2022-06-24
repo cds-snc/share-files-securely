@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block title %}{{ t("home") }}{% endblock %}
+{% block page_title %}{{t("share_files_securely") }} - {{ t("home") }} {% endblock %}
+{% block breadcrumbs %}
+<ol class="list-reset flex text-grey-dark breadcrumbs">
+  <li><a href="/" class="font-bold">{{t("home")}}</a></li>
+</ol>
+{% endblock %}
+{% block content %}
+<div class="dropzone" id="dropzone">
+  <div class="dz-message">{{ t("drop_files_here")}}</div>
+</div>
+<h2>{{ t('uploaded_files') }}</h2>
+<div class="file-list relative overflow-x-auto shadow-md sm:rounded-lg">
+  <table id="file-table" class="min-w-full">
+    <thead class="border-b">
+      <tr>
+        <th class="text-sm font-medium text-gray-900 px-6 py-4 text-left">{{ t('name') }}</th>
+        <th class="text-sm font-medium text-gray-900 px-6 py-4 text-left">{{ t('size') }}</th>
+        <th class="text-sm font-medium text-gray-900 px-6 py-4 text-left">{{ t('type') }}</th>
+        <th class="text-sm font-medium text-gray-900 px-6 py-4 text-left">{{ t('share') }}</th>
+        <th class="text-sm font-medium text-gray-900 px-6 py-4 text-left">{{ t('delete') }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for file in files %}
+      <tr data-id="{{file.id}}">
+        <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">{{ file.name }}</td>
+        <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">{{ file.size }}</td>
+        <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">{{ file.type }}</td>
+        <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+          <a href="/share/{{file.id}}">{{ t('share') }}</a>
+        </td>
+        <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+          <a href="/delete/{{file.id}}">{{ t('delete') }}</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<script>
+  let dz = new Dropzone('#dropzone', {
+    url: '{{ s3_url }}',
+    accept: function (file, done) {
+      file.s3_vars = [];
+      fetch('/sign', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': '{{ csrf_token }}'
+        },
+        body: JSON.stringify({
+          name: file.name,
+          size: file.size,
+          type: file.type
+        })
+      })
+        .then(res => res.json())
+        .then(data => {
+          file.s3_vars = data;
+          done()
+        });
+    },
+    sending: function (file, xhr, formData) {
+      Object.keys(file.s3_vars).forEach(function (key) {
+        formData.append(key, file.s3_vars[key])
+      })
+    },
+    success: function (file) {
+      fetch('/save', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': '{{ csrf_token }}'
+        },
+        body: JSON.stringify({
+          name: file.name,
+          size: file.size,
+          type: file.type
+        })
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.status == "created") {
+            let table = document.getElementById('file-table')
+            let row = table.insertRow(-1)
+            let name = row.insertCell(0)
+            let size = row.insertCell(1)
+            let type = row.insertCell(2)
+            let share = row.insertCell(3)
+            let delete_btn = row.insertCell(4)
+            name.innerHTML = file.name
+            addCellClasses(name)
+            size.innerHTML = file.size
+            addCellClasses(size)
+            type.innerHTML = file.type
+            addCellClasses(type)
+            share.innerHTML = '<a href="/share/' + data.id + '">{{ t("share") }}</a>'
+            addCellClasses(share)
+            delete_btn.innerHTML = '<a href="/delete/' + data.id + '">{{ t("delete") }}</a>'
+            addCellClasses(delete_btn)
+          }
+        });
+
+      if (file.previewElement) {
+        return file.previewElement.classList.add("dz-success");
+      }
+    }
+  });
+
+  function addCellClasses(cell) {
+    cell.classList.add('text-sm')
+    cell.classList.add('text-gray-900')
+    cell.classList.add('font-light')
+    cell.classList.add('px-6')
+    cell.classList.add('py-4')
+    cell.classList.add('whitespace-nowrap')
+  }
+
+</script>
+{% endblock %}

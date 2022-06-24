@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}{{t("generate_share_link")}}{% endblock %}
+{% block page_title %}{{t("generate_share_link")}}{% endblock %}
+{% block breadcrumbs %}
+<ol class="list-reset flex text-grey-dark breadcrumbs">
+    <li><a href="/" class="font-bold">{{t("home")}}</a></li>
+    <li><span class="mx-2">/</span></li>
+    <li><a href="/share/{{file.id}}" class="font-bold">{{t("generate_share_link")}}</a></li>
+</ol>
+{% endblock %}
+{% block content %}
+<div>
+    <p>{{t("generate_link_desc")}}</p>
+    <br />
+    <p>{{t("sharing")}}: {{file.name}}</p>
+</div>
+
+<form id="form" action="/generate" method="post">
+    {{ csrf_field }}
+    <div class="focus-group">
+        <label>{{t("link_duration")}}</label>
+        <select class="gc-dropdown" name="link_duration">
+            <option value="1" selected>1 {{t("hour")}}</option>
+            <option value="6">6 {{t("hours")}}</option>
+            <option value="24">1 {{t("day")}}</option>
+            <option value="120">5 {{t("days")}}</option>
+            <option value="336">14 {{t("days")}}</option>
+        </select>
+    </div>
+    <div class="buttons">
+        <input type="hidden" name="id" value="{{file.id}}" />
+        <button class="gc-button">{{t("generate_link")}}</button>
+    </div>
+</form>
+
+{% endblock %}

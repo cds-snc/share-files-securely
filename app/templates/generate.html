@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}{{t("generated_link")}}{% endblock %}
+{% block page_title %}{{t("generated_link")}}{% endblock %}
+{% block breadcrumbs %}
+<ol class="list-reset flex text-grey-dark breadcrumbs">
+    <li><a href="/" class="font-bold">{{t("home")}}</a></li>
+    <li><span class="mx-2">/</span></li>
+    <li><a href="/share/{{file.id}}" class="font-bold">{{t("generate_share_link")}}</a></li>
+    <li><span class="mx-2">/</span></li>
+    <li><span class="font-bold">{{t("generated_link")}}</span></li>
+</ol>
+{% endblock %}
+{% block content %}
+<div>
+    <p>{{t("generated_link_desc")}} {{link_duration}} {{t("hours")}}.</p>
+    <br />
+    <p>{{t("sharing")}}: {{file.name}}</p>
+</div>
+<div class="focus-group">
+    <label class="gc-label">{{t("link")}}</label>
+    <input type="text" value="{{link}}" readonly class="gc-input-text" style="width: 100%;" />
+</div>
+{% endblock %}
