@@ -8,17 +8,20 @@ import os
 class TranslateMiddleware(Middleware):
     """Middleware that adds translated string to the view."""
 
+    def __init__(self):
+        self._language = "en"
+        super().__init__()
+
     def before(self, request, response):
-        language = "en"
         if request.session.has("lang"):
-            language = request.session.get("lang")
+            self._language = request.session.get("lang")
         languages = self.load_languages()
-        if language not in languages:
-            language = "en"
+        if self._language not in languages:
+            self._language = "en"
 
         request.app.make("view").share(
             {
-                "t": lambda s: languages[language].get(s, f"MISSING_STRING: {s}"),
+                "t": lambda s: languages[self._language].get(s, f"MISSING_STRING: {s}"),
             }
         )
 
