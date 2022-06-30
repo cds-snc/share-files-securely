@@ -1,0 +1,38 @@
+name: Lint, format and test code
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - app/**
+      - .github/workflows/ci_code.yml
+
+env:
+  TERRAGRUNT_VERSION: v0.31.1
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.10"
+
+      - name: Install dev dependencies
+        working-directory: ./app
+        run: make init-dev
+
+      - name: Install dependencies
+        working-directory: ./app
+        run: make init
+
+      - name: Format
+        working-directory: ./app
+        run: make format
+
+      - name: Test
+        working-directory: ./app
+        run: make test

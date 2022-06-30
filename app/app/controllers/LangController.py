@@ -4,8 +4,7 @@ from masonite.response import Response
 
 
 class LangController(Controller):
-
     def switch(self, request: Request, response: Response):
-        lang = request.param('lang')
+        lang = request.param("lang")
         request.session.set("lang", lang)
-        return response.redirect(request.header('Referer'))
+        return response.redirect(request.header("Referer"))

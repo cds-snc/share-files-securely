@@ -1,7 +1,7 @@
 from masonite.middleware import Middleware
 
 
-class AuthenticationMiddleware(Middleware):
+class SessionAuthenticationMiddleware(Middleware):
     """Middleware to check if the user is logged in."""
 
     def before(self, request, response):
