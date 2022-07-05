@@ -1,3 +1,4 @@
+from apig_wsgi import make_lambda_handler
 from masonite.foundation import Application, Kernel
 from masonite.utils.location import base_path
 from masonite.configuration import config
@@ -12,3 +13,8 @@ application.register_providers(Kernel, ApplicationKernel)
 
 """Now Bind important application specific providers needed to make the application work."""
 application.add_providers(*config("providers.providers"))
+
+apig_wsgi_handler = make_lambda_handler(application, binary_support=True)
+
+def handler(event, context):
+    return apig_wsgi_handler(event, context)
