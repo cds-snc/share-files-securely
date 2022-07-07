@@ -5,14 +5,14 @@ resource "random_password" "password" {
 }
 
 resource "aws_rds_cluster" "share_files_securely" {
-  cluster_identifier   = "share-files-securely"
-  engine               = "aurora-postgresql"
-  engine_mode          = "provisioned"
-  engine_version       = "13.6"
-  database_name        = "share_files_securely"
-  master_username      = "share_files_securely"
-  master_password      = random_password.password.result
-  db_subnet_group_name = aws_db_subnet_group.share_files_securely.name
+  cluster_identifier     = "share-files-securely"
+  engine                 = "aurora-postgresql"
+  engine_mode            = "provisioned"
+  engine_version         = "13.6"
+  database_name          = "share_files_securely"
+  master_username        = "share_files_securely"
+  master_password        = random_password.password.result
+  db_subnet_group_name   = aws_db_subnet_group.share_files_securely.name
   vpc_security_group_ids = [aws_security_group.share_files_securely_lambda.id]
 
   serverlessv2_scaling_configuration {

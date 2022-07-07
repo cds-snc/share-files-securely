@@ -24,6 +24,6 @@ resource "aws_s3_bucket_cors_configuration" "share_files_securely_bucket" {
     allowed_headers = ["*"]
     allowed_methods = ["GET", "PUT", "POST", "DELETE"]
     allowed_origins = ["*"]
-    expose_headers = []
+    expose_headers  = []
   }
 }
