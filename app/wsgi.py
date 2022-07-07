@@ -16,5 +16,6 @@ application.add_providers(*config("providers.providers"))
 
 apig_wsgi_handler = make_lambda_handler(application, binary_support=True)
 
+
 def handler(event, context):
     return apig_wsgi_handler(event, context)

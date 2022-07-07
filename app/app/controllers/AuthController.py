@@ -11,7 +11,7 @@ from requests_oauthlib import OAuth2Session
 
 client_id = env("GOOGLE_CLIENT_ID")
 client_secret = env("GOOGLE_CLIENT_SECRET")
-redirect_uri = "http://localhost:8000/auth/callback"
+redirect_uri = f"{env('APP_URL')}/auth/callback"
 
 authorization_base_url = "https://accounts.google.com/o/oauth2/v2/auth"
 token_url = "https://www.googleapis.com/oauth2/v4/token"

@@ -17,3 +17,13 @@ package-lock.json
 # compiled assets
 storage/compiled
 .coverage
+
+# Local .terraform directories
+**/.terraform/*
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+
+.terragrunt*
+.terraform*

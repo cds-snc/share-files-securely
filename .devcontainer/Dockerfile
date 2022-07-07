@@ -7,27 +7,10 @@ ENV PYTHONUNBUFFERED 1
 # Set these in devcontainer.json
 ARG SHELLCHECK_VERSION
 ARG SHELLCHECK_CHECKSUM
-ARG TERRAFORM_VERSION
-ARG TERRAFORM_CHECKSUM
-ARG TERRAGRUNT_VERSION
-ARG TERRAGRUNT_CHECKSUM
 
 # [Choice] Node.js version: none, lts/*, 16, 14, 12, 10
 ARG NODE_VERSION="none"
 RUN if [ "${NODE_VERSION}" != "none" ]; then su vscode -c "umask 0002 && . /usr/local/share/nvm/nvm.sh && nvm install ${NODE_VERSION} 2>&1"; fi
-
-# Install Terraform
-RUN curl -Lo terraform.zip "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" \
-    && echo "${TERRAFORM_CHECKSUM} terraform.zip" | sha256sum --check \
-    && unzip terraform.zip \
-    && mv terraform /usr/local/bin/ \
-    && rm terraform.zip
-
-# Install Terragrunt
-RUN curl -Lo terragrunt https://github.com/gruntwork-io/terragrunt/releases/download/v"${TERRAGRUNT_VERSION}"/terragrunt_linux_"$(dpkg --print-architecture)" \
-    && echo "${TERRAGRUNT_CHECKSUM} terragrunt" | sha256sum --check \
-    && chmod +x terragrunt \
-    && mv terragrunt /usr/local/bin/
 
 # Install ShellCheck
 RUN curl -Lo shellcheck.tar.xz "https://github.com/koalaman/shellcheck/releases/download/v${SHELLCHECK_VERSION}/shellcheck-v${SHELLCHECK_VERSION}.linux.x86_64.tar.xz" \
