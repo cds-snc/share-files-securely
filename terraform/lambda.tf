@@ -18,8 +18,8 @@ module "share_files_securely_lambda" {
     AWS_S3_BUCKET = module.share_files_securely_bucket.s3_bucket_id
     DB_CONNECTION = "postgres"
     DB_HOST       = aws_rds_cluster.share_files_securely.endpoint
-    DB_USERNAME   = aws_rds_cluster.share_files_securely.database_name
-    DB_DATABASE   = aws_rds_cluster.share_files_securely.master_username
+    DB_USERNAME   = aws_rds_cluster.share_files_securely.master_username
+    DB_DATABASE   = aws_rds_cluster.share_files_securely.database_name
     DB_PASSWORD   = random_password.password.result
     DB_PORT       = 5432
   }

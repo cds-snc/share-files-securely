@@ -18,6 +18,7 @@
         <th class="text-sm font-medium text-gray-900 px-6 py-4 text-left">{{ t('name') }}</th>
         <th class="text-sm font-medium text-gray-900 px-6 py-4 text-left">{{ t('size') }}</th>
         <th class="text-sm font-medium text-gray-900 px-6 py-4 text-left">{{ t('type') }}</th>
+        <th class="text-sm font-medium text-gray-900 px-6 py-4 text-left">{{ t('av_status') }}</th>
         <th class="text-sm font-medium text-gray-900 px-6 py-4 text-left">{{ t('share') }}</th>
         <th class="text-sm font-medium text-gray-900 px-6 py-4 text-left">{{ t('delete') }}</th>
       </tr>
@@ -26,8 +27,9 @@
       {% for file in files %}
       <tr data-id="{{file.id}}">
         <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">{{ file.name }}</td>
-        <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">{{ file.size }}</td>
+        <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">{{ file.size|filesizeformat }}</td>
         <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">{{ file.type }}</td>
+        <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">{{ t(file.av_status) }}</td>
         <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
           <a href="/share/{{file.id}}">{{ t('share') }}</a>
         </td>
@@ -88,14 +90,17 @@
             let name = row.insertCell(0)
             let size = row.insertCell(1)
             let type = row.insertCell(2)
-            let share = row.insertCell(3)
-            let delete_btn = row.insertCell(4)
+            let av_status = row.insertCell(3)
+            let share = row.insertCell(4)
+            let delete_btn = row.insertCell(5)
             name.innerHTML = file.name
             addCellClasses(name)
             size.innerHTML = file.size
             addCellClasses(size)
             type.innerHTML = file.type
             addCellClasses(type)
+            av_status.innerHTML = "{{ t('in_progress') }}"
+            addCellClasses(av_status)
             share.innerHTML = '<a href="/share/' + data.id + '">{{ t("share") }}</a>'
             addCellClasses(share)
             delete_btn.innerHTML = '<a href="/delete/' + data.id + '">{{ t("delete") }}</a>'

@@ -21,7 +21,9 @@ class TranslateMiddleware(Middleware):
 
         request.app.make("view").share(
             {
-                "t": lambda s: languages[self._language].get(s, f"MISSING_STRING: {s}"),
+                "t": lambda s: languages[self._language].get(
+                    str(s).lower(), f"MISSING_STRING: {s}"
+                ),
             }
         )
 

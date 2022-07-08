@@ -64,6 +64,10 @@ class FileController(Controller):
             file.name = name
             file.size = size
             file.type = type
+            file.av_timestamp = None
+            file.av_status = None
+            file.av_scanner = None
+            file.av_checksum = None
             file.save()
             result = "updated"
         else:
@@ -80,6 +84,7 @@ class FileController(Controller):
         try:
             file = File.where("id", id).where("user_email", user["email"]).first()
             if file:
+                file.load_av_tags()
                 return view.render("share", {"file": file})
         except Exception as e:
             print(e)
