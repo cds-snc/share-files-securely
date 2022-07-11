@@ -11,4 +11,5 @@ ROUTES = [
     Route.get("/share/@id", "FileController@share").name("share").middleware("auth"),
     Route.get("/lang/@lang", "LangController@switch").name("language_switcher").middleware("auth"),
     Route.post("/generate", "FileController@generate").name("generate").middleware("auth"),
+    Route.get("/healthcheck", "HealthController@show").name("healthcheck"),
 ]

@@ -15,6 +15,7 @@ module "share_files_securely_lambda" {
   }
 
   environment_variables = {
+    APP_URL       = "https://share-files.cdssandbox.xyz"
     AWS_S3_BUCKET = module.share_files_securely_bucket.s3_bucket_id
     DB_CONNECTION = "postgres"
     DB_HOST       = aws_rds_cluster.share_files_securely.endpoint

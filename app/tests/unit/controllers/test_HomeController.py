@@ -11,13 +11,15 @@ class HomeControllerTest(TestCase):
             request = Mock()
             request.session.get = Mock(return_value={"email": "test@email.com"})
             view = Mock()
-            mock_file.where().get.return_value = [{"name": "test.txt"}]
+            file = Mock()
+            mock_file.where().get.return_value = [file]
             controller.show(request, view)
             view.render.assert_called_once()
             view.render.assert_called_with(
                 "home",
                 {
                     "s3_url": "https://share-files-securely.s3.amazonaws.com/",
-                    "files": [{"name": "test.txt"}],
+                    "files": [file],
                 },
             )
+            file.load_av_tags.assert_called_once()

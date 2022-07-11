@@ -25,8 +25,8 @@ class FileController(Controller):
             client = boto3.client("s3")
             client.delete_object(Bucket=env("AWS_S3_BUCKET"), Key=f"{user['email']}/{file.name}")
             file.delete()
-            return response.redirect("/").with_success("File deleted!")
-        return response.redirect("/").with_error("File not found!")
+            return response.redirect("/").with_success("file_deleted")
+        return response.redirect("/").with_error("file_not_found")
 
     def generate(self, request: Request, response: Response, view: View):
         user = request.session.get("user")

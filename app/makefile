@@ -14,5 +14,6 @@ reset:
 serve:
 	python craft serve
 test:
+	python craft migrate -c testing &&\
 	coverage run -m pytest -s -vv tests &&\
 	coverage report -m

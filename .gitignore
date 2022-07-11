@@ -27,3 +27,5 @@ storage/compiled
 
 .terragrunt*
 .terraform*
+
+*.sqlite3

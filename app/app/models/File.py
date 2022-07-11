@@ -9,6 +9,10 @@ from masoniteorm.scopes import SoftDeletesMixin
 class File(Model, SoftDeletesMixin):
     __fillable__ = ["id", "name", "size", "type", "user_email"]
 
+    def __init__(self):
+        self.av_timestamp = None
+        super().__init__()
+
     def load_av_tags(self):
         if self.av_timestamp is None:
             key = f"{self.user_email}/{self.name}"

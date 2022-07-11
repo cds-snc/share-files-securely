@@ -22,7 +22,7 @@ class FileControllerTest(TestCase):
                 client.delete_object.assert_called_with(Bucket="share-files-securely", Key=ANY)
                 file.delete.assert_called_once()
                 response.redirect.assert_called_with("/")
-                response.redirect("/").with_success.assert_called_with("File deleted!")
+                response.redirect("/").with_success.assert_called_with("file_deleted")
 
     def test_delete_file_not_found(self):
         with patch("app.controllers.FileController.File") as mock_file:
@@ -34,7 +34,7 @@ class FileControllerTest(TestCase):
             mock_file.where().where().first.return_value = False
             controller.delete(request, response)
             response.redirect.assert_called_with("/")
-            response.redirect("/").with_error.assert_called_with("File not found!")
+            response.redirect("/").with_error.assert_called_with("file_not_found")
 
     def test_generate_file_not_found(self):
         with patch("app.controllers.FileController.File") as mock_file:
