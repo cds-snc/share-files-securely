@@ -13,6 +13,10 @@
     <p>{{t("generate_link_desc")}}</p>
     <br />
     <p>{{t("sharing")}}: {{file.name}}</p>
+    <br />
+    <p>{{t("size")}}: {{file.size|filesizeformat}}</p>
+    <br />
+    <p>{{t("av_status")}}: {{t(file.av_status)}}</p>
 </div>
 
 <form id="form" action="/generate" method="post">

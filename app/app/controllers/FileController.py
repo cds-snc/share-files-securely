@@ -22,15 +22,11 @@ class FileController(Controller):
         id = request.param("id")
         file = File.where("id", id).where("user_email", user["email"]).first()
         if file:
-            client = boto3.client(
-                "s3",
-                aws_access_key_id=env("AWS_ACCESS_KEY_ID"),
-                aws_secret_access_key=env("AWS_SECRET_ACCESS_KEY"),
-            )
+            client = boto3.client("s3")
             client.delete_object(Bucket=env("AWS_S3_BUCKET"), Key=f"{user['email']}/{file.name}")
             file.delete()
-            return response.redirect("/").with_success("File deleted!")
-        return response.redirect("/").with_error("File not found!")
+            return response.redirect("/").with_success("file_deleted")
+        return response.redirect("/").with_error("file_not_found")
 
     def generate(self, request: Request, response: Response, view: View):
         user = request.session.get("user")
@@ -41,8 +37,6 @@ class FileController(Controller):
             if file:
                 client = boto3.client(
                     "s3",
-                    aws_access_key_id=env("AWS_ACCESS_KEY_ID"),
-                    aws_secret_access_key=env("AWS_SECRET_ACCESS_KEY"),
                     config=boto3.session.Config(signature_version="s3v4"),
                     region_name="ca-central-1",
                 )
@@ -70,6 +64,10 @@ class FileController(Controller):
             file.name = name
             file.size = size
             file.type = type
+            file.av_timestamp = None
+            file.av_status = None
+            file.av_scanner = None
+            file.av_checksum = None
             file.save()
             result = "updated"
         else:
@@ -86,6 +84,7 @@ class FileController(Controller):
         try:
             file = File.where("id", id).where("user_email", user["email"]).first()
             if file:
+                file.load_av_tags()
                 return view.render("share", {"file": file})
         except Exception as e:
             print(e)
@@ -94,67 +93,13 @@ class FileController(Controller):
     def sign(self, request: Request, response: Response):
 
         user = request.session.get("user")
-
         name = request.input("name")
-        size = request.input("size")
-        type = request.input("type")
-
         key = f"{user['email']}/{name}"
-
-        t = datetime.utcnow()
-        amz_date = t.strftime("%Y%m%dT000000Z")
-        datestamp = t.strftime("%Y%m%d")
-
-        signing_key = getSignatureKey(
-            env("AWS_SECRET_ACCESS_KEY"), datestamp, "ca-central-1", "s3"
+        s3_client = boto3.client(
+            "s3",
+            config=boto3.session.Config(signature_version="s3v4"),
+            region_name="ca-central-1",
         )
+        resp = s3_client.generate_presigned_post(env("AWS_S3_BUCKET"), key, ExpiresIn=300)
 
-        policy = {
-            "expiration": (t + timedelta(hours=1)).strftime("%Y-%m-%dT%H:%M:%SZ"),
-            "conditions": [
-                {"bucket": env("AWS_S3_BUCKET")},
-                ["starts-with", "$key", user["email"]],
-                {"success_action_status": "201"},
-                ["starts-with", "$Content-Type", type],
-                ["content-length-range", 0, size],
-                {"x-amz-meta-email": user["email"]},
-                {
-                    "x-amz-credential": f"{env('AWS_ACCESS_KEY_ID')}/{datestamp}/ca-central-1/s3/aws4_request"
-                },
-                {"x-amz-algorithm": "AWS4-HMAC-SHA256"},
-                {"x-amz-server-side-encryption": "AES256"},
-                {"x-amz-date": amz_date},
-            ],
-        }
-
-        policy_b64 = base64.b64encode(json.dumps(policy).encode()).decode()
-        signing_key = getSignatureKey(
-            env("AWS_SECRET_ACCESS_KEY"), datestamp, "ca-central-1", "s3"
-        )
-        signature = hmac.new(signing_key, policy_b64.encode(), hashlib.sha256).hexdigest()
-
-        payload = {
-            "x-amz-signature": signature,
-            "x-amz-meta-email": user["email"],
-            "x-amz-server-side-encryption": "AES256",
-            "x-amz-credential": f"{env('AWS_ACCESS_KEY_ID')}/{datestamp}/ca-central-1/s3/aws4_request",
-            "x-amz-algorithm": "AWS4-HMAC-SHA256",
-            "x-amz-date": amz_date,
-            "success_action_status": "201",
-            "Content-Type": type,
-            "key": key,
-            "policy": policy_b64,
-        }
-        return response.json(payload)
-
-
-def signed(key, msg):
-    return hmac.new(key, msg.encode("utf-8"), hashlib.sha256).digest()
-
-
-def getSignatureKey(key, dateStamp, regionName, serviceName):
-    kDate = signed(("AWS4" + key).encode("utf-8"), dateStamp)
-    kRegion = signed(kDate, regionName)
-    kService = signed(kRegion, serviceName)
-    kSigning = signed(kService, "aws4_request")
-    return kSigning
+        return response.json(resp["fields"])

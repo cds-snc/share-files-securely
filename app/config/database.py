@@ -51,6 +51,10 @@ DATABASES = {
         "prefix": "",
         "log_queries": env("DB_LOG"),
     },
+    "testing": {
+        "driver": "sqlite",
+        "database": "test_database.sqlite3",
+    },
 }
 
 DB = ConnectionResolver().set_connection_details(DATABASES)

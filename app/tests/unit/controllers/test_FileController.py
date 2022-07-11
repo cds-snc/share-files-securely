@@ -22,7 +22,7 @@ class FileControllerTest(TestCase):
                 client.delete_object.assert_called_with(Bucket="share-files-securely", Key=ANY)
                 file.delete.assert_called_once()
                 response.redirect.assert_called_with("/")
-                response.redirect("/").with_success.assert_called_with("File deleted!")
+                response.redirect("/").with_success.assert_called_with("file_deleted")
 
     def test_delete_file_not_found(self):
         with patch("app.controllers.FileController.File") as mock_file:
@@ -34,7 +34,7 @@ class FileControllerTest(TestCase):
             mock_file.where().where().first.return_value = False
             controller.delete(request, response)
             response.redirect.assert_called_with("/")
-            response.redirect("/").with_error.assert_called_with("File not found!")
+            response.redirect("/").with_error.assert_called_with("file_not_found")
 
     def test_generate_file_not_found(self):
         with patch("app.controllers.FileController.File") as mock_file:
@@ -154,23 +154,17 @@ class FileControllerTest(TestCase):
             view.render.assert_called_with("share", {"file": file})
 
     def test_sign(self):
-        controller = FileController()
-        request = MagicMock()
-        request.session.get.return_value = {"email": "test@email.com"}
-        request.input.side_effect = ["1", "100", "mime/type"]
-        response = MagicMock()
-        controller.sign(request, response)
-        response.json.assert_called_with(
-            {
-                "x-amz-signature": ANY,
-                "x-amz-meta-email": "test@email.com",
-                "x-amz-server-side-encryption": "AES256",
-                "x-amz-credential": "AWS_ACCESS_KEY_ID/20220630/ca-central-1/s3/aws4_request",
-                "x-amz-algorithm": "AWS4-HMAC-SHA256",
-                "x-amz-date": ANY,
-                "success_action_status": "201",
-                "Content-Type": "mime/type",
-                "key": "test@email.com/1",
-                "policy": ANY,
-            }
-        )
+        with patch("app.controllers.FileController.boto3") as mock_boto3:
+            client = MagicMock()
+            client.generate_presigned_post.return_value = {"fields": {"key": "value"}}
+            mock_boto3.client.return_value = client
+            controller = FileController()
+            request = MagicMock()
+            request.session.get.return_value = {"email": "test@email.com"}
+            request.input.return_value = "1"
+            response = MagicMock()
+            controller.sign(request, response)
+            client.generate_presigned_post.assert_called_with(
+                "share-files-securely", "test@email.com/1", ExpiresIn=300
+            )
+            response.json.assert_called_with({"key": "value"})
