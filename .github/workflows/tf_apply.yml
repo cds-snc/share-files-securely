@@ -33,12 +33,8 @@ jobs:
           terraform_version: ${{ env.TERRAFORM_VERSION }}
           terraform_wrapper: false
 
-      - name: Setup Terragrunt
-        run: |
-          mkdir -p bin
-          wget -O bin/terragrunt https://github.com/gruntwork-io/terragrunt/releases/download/$TERRAGRUNT_VERSION/terragrunt_linux_amd64
-          chmod +x bin/terragrunt
-          echo "$GITHUB_WORKSPACE/bin" >> $GITHUB_PATH
+      - name: setup terraform tools
+        uses: cds-snc/terraform-tools-setup@v1
 
       - name: Configure aws credentials using OIDC
         uses: aws-actions/configure-aws-credentials@master
