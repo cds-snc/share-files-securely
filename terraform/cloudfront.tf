@@ -1,3 +1,8 @@
+resource "aws_cloudfront_origin_access_identity" "origin_access_identity" {
+  comment = "cloudfront origin access identity"
+}
+
+
 resource "aws_cloudfront_distribution" "share_files_securely" {
   enabled     = true
   aliases     = ["share-files.cdssandbox.xyz"]
@@ -18,6 +23,10 @@ resource "aws_cloudfront_distribution" "share_files_securely" {
   origin {
     domain_name = module.share_files_securely_bucket.s3_bucket_regional_domain_name
     origin_id   = "${module.share_files_securely_bucket.s3_bucket_id}-bucket"
+
+    s3_origin_config {
+      origin_access_identity = aws_cloudfront_origin_access_identity.origin_access_identity.cloudfront_access_identity_path
+    }
   }
 
   default_cache_behavior {
