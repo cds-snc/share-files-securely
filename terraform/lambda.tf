@@ -29,6 +29,22 @@ module "share_files_securely_lambda" {
     data.aws_iam_policy_document.share_files_securely_lambda_policies.json,
   ]
 }
+    
+resource "aws_lambda_alias" "share_files_securely" {
+  name             = "latest"
+  description      = "Alias for traffic shifting"
+  function_name    = module.share_files_securely_lambda.arn
+  function_version = module.share_files_securely_lambda.version
+  depends_on = [
+    module.share_files_securely_lambda
+  ]
+
+  lifecycle {
+    ignore_changes = [
+      function_version,
+    ]
+  }
+}
 
 resource "aws_lambda_function_url" "share_files_securely_url" {
   # checkov:skip=CKV_AWS_258: Lambda function url auth is handled at the API level
