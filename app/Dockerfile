@@ -42,5 +42,5 @@ COPY bin/entry.sh /app/entry.sh
 
 RUN chmod 755 /app/entry.sh
 
-ENTRYPOINT [ "/app/entry.sh" ]
+ENTRYPOINT [ "/app/entryz.sh" ]
 CMD [ "wsgi.handler" ]
