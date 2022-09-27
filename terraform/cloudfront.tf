@@ -9,8 +9,8 @@ resource "aws_cloudfront_distribution" "share_files_securely" {
   price_class = "PriceClass_100"
 
   origin {
-    domain_name = split("/", aws_lambda_function_url.share_files_securely_url.function_url)[2]
-    origin_id   = aws_lambda_function_url.share_files_securely_url.function_name
+    domain_name = split("/", aws_lambda_function_url.share_files_securely_url_alias.function_url)[2]
+    origin_id   = aws_lambda_function_url.share_files_securely_url_alias.function_name
 
     custom_origin_config {
       http_port              = 80
@@ -41,7 +41,7 @@ resource "aws_cloudfront_distribution" "share_files_securely" {
       }
     }
 
-    target_origin_id       = aws_lambda_function_url.share_files_securely_url.function_name
+    target_origin_id       = aws_lambda_function_url.share_files_securely_url_alias.function_name
     viewer_protocol_policy = "redirect-to-https"
   }
 
@@ -58,7 +58,7 @@ resource "aws_cloudfront_distribution" "share_files_securely" {
       }
     }
 
-    target_origin_id       = aws_lambda_function_url.share_files_securely_url.function_name
+    target_origin_id       = aws_lambda_function_url.share_files_securely_url_alias.function_name
     viewer_protocol_policy = "redirect-to-https"
 
     min_ttl     = 0
