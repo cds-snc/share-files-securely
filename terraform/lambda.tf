@@ -58,3 +58,16 @@ resource "aws_lambda_function_url" "share_files_securely_url" {
     max_age           = 86400
   }
 }
+  
+resource "aws_lambda_function_url" "share_files_securely_url_alias" {
+  # checkov:skip=CKV_AWS_258: Lambda function url auth is handled at the API level
+  function_name      = "${module.share_files_securely_lambda.function_name}:${aws_lambda_alias.share_files_securely.name}"
+  authorization_type = "NONE"
+
+  cors {
+    allow_credentials = true
+    allow_origins     = ["*"]
+    allow_methods     = ["*"]
+    max_age           = 86400
+  }
+}
