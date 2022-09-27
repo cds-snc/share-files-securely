@@ -29,7 +29,7 @@ module "share_files_securely_lambda" {
     data.aws_iam_policy_document.share_files_securely_lambda_policies.json,
   ]
 }
-    
+
 resource "aws_lambda_alias" "share_files_securely" {
   name             = "latest"
   description      = "Alias for traffic shifting"
