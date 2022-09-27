@@ -1,5 +1,5 @@
 module "share_files_securely_lambda" {
-  source                 = "github.com/cds-snc/terraform-modules?ref=v3.0.5//lambda"
+  source                 = "github.com/cds-snc/terraform-modules?ref=v3.0.18//lambda"
   name                   = "share_files_securely"
   billing_tag_value      = var.billing_code
   ecr_arn                = aws_ecr_repository.share_files_securely.arn
@@ -28,6 +28,22 @@ module "share_files_securely_lambda" {
   policies = [
     data.aws_iam_policy_document.share_files_securely_lambda_policies.json,
   ]
+}
+
+resource "aws_lambda_alias" "share_files_securely" {
+  name             = "latest"
+  description      = "Alias for traffic shifting"
+  function_name    = module.share_files_securely_lambda.function_arn
+  function_version = module.share_files_securely_lambda.function_version
+  depends_on = [
+    module.share_files_securely_lambda
+  ]
+
+  lifecycle {
+    ignore_changes = [
+      function_version,
+    ]
+  }
 }
 
 resource "aws_lambda_function_url" "share_files_securely_url" {
