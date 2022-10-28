@@ -24,7 +24,7 @@ jobs:
       - name: Configure aws credentials using OIDC
         uses: aws-actions/configure-aws-credentials@master
         with:
-          role-to-assume: arn:aws:iam::283582579564:role/ShareFilesSecurelyTerraformAdministratorRole
+          role-to-assume: arn:aws:iam::283582579564:role/share-files-securely-apply
           role-session-name: ShareFilesSecurelyGitHubActions
           aws-region: "ca-central-1"
 
