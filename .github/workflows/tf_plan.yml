@@ -38,12 +38,12 @@ jobs:
       - name: Configure aws credentials using OIDC
         uses: aws-actions/configure-aws-credentials@master
         with:
-          role-to-assume: arn:aws:iam::283582579564:role/ShareFilesSecurelyTerraformReadOnlyRole
+          role-to-assume: arn:aws:iam::283582579564:role/share-files-securely-plan
           role-session-name: ShareFileSecurelyGitHubActions
           aws-region: "ca-central-1"
 
       - name: Terraform Plan ${{ matrix.module }}
-        uses: cds-snc/terraform-plan@v2
+        uses: cds-snc/terraform-plan@v3
         with:
           comment-delete: true
           comment-title: Plan for ${{ matrix.module }}
