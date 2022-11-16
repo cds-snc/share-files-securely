@@ -48,4 +48,4 @@ echo "Running migrations ..."
 python craft migrate
 
 echo "Starting server ..."
-exec /usr/local/bin/python -m awslambdaric "$1"
+exec python -m awslambdaric "$1"
