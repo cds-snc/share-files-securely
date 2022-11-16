@@ -1,7 +1,7 @@
 FROM public.ecr.aws/lambda/python:3.9-x86_64
 
 RUN  yum update \
-  && yum install wget unzip
+  && yum install -y wget unzip
 
 WORKDIR /app
 
