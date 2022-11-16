@@ -19,7 +19,7 @@ RUN pip install awslambdaric
 # Install the lambda insights extension
 RUN wget -O lambda-insights-extension.rpm https://lambda-insights-extension.s3-ap-northeast-1.amazonaws.com/amazon_linux/lambda-insights-extension.rpm \
   && rpm2cpio lambda-insights-extension.rpm | cpio -idmv \
-  && mv opt/ /opt/ \
+  && mv opt/* /opt/ \
   && rm -rf lambda-insights-extension.rpm
 
 # Install AWS cli
