@@ -1,4 +1,4 @@
-FROM public.ecr.aws/lambda/python:3.10
+FROM public.ecr.aws/lambda/python:3.9-x86_64
 
 RUN  yum update \
   && yum install wget unzip
