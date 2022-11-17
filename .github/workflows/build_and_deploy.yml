@@ -32,11 +32,18 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
       - name: Build container
         working-directory: ./app
         run: |
-          docker build \
+          docker buildx build \
           --build-arg git_sha=$GITHUB_SHA \
+          --platform=linux/arm64 \
           -t $REGISTRY/share-files-securely:$GITHUB_SHA \
           -t $REGISTRY/share-files-securely:latest .
 
@@ -51,12 +58,12 @@ jobs:
           aws lambda update-function-code \
             --function-name "share_files_securely" \
             --image-uri $REGISTRY/share-files-securely:latest > /dev/null 2>&1
-            
+
       - name: Publish new lambda version
         run: |
           aws lambda wait function-updated --function-name share_files_securely
           echo "VERSION=$(aws lambda publish-version --function-name share_files_securely | jq -r '.Version')" >> $GITHUB_ENV
-      
+
       - name: Shift lambda traffic over 8 minutes
         uses: cds-snc/aws-lambda-traffic-shifting-action@0.4
         env:
