@@ -24,7 +24,7 @@ jobs:
       - name: Build container
         working-directory: ./app
         run: |
-          docker buildx \
+          docker buildx build \
           --build-arg git_sha=$GITHUB_SHA \
           --platform=linux/arm64 \
           -t $REGISTRY/share-files-securely:$GITHUB_SHA \
