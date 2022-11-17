@@ -1,7 +1,8 @@
-FROM public.ecr.aws/lambda/python:3.9-arm64
+FROM arm64v8/python:3.10.0-slim
 
-RUN yum -y update \
-  && yum -y install wget unzip
+RUN apt-get update \
+  && apt-get install -y wget unzip \
+  && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
