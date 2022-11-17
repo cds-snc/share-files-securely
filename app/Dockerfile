@@ -17,7 +17,7 @@ RUN pip install awslambdaric
 
 # Install AWS cli
 ARG AWS_CLI_VERSION="2.4.5"
-RUN wget -O awscliv2.zip https://awscli.amazonaws.com/awscli-exe-linux-x86_64-${AWS_CLI_VERSION}.zip \
+RUN wget -O awscliv2.zip https://awscli.amazonaws.com/awscli-exe-linux-aarch64-${AWS_CLI_VERSION}.zip \
   && unzip awscliv2.zip \
   && aws/install \
   && rm -rf \
