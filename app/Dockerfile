@@ -1,8 +1,7 @@
-FROM python:3.10.0-slim
+FROM public.ecr.aws/lambda/python:3.9-arm64
 
-RUN apt-get update \
-  && apt-get install -y cpio rpm2cpio wget unzip \
-  && rm -rf /var/lib/apt/lists/*
+RUN yum -y update \
+  && yum -y install wget unzip
 
 WORKDIR /app
 
@@ -16,15 +15,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Install the runtime interface client
 RUN pip install awslambdaric
 
-# Install the lambda insights extension
-RUN wget -O lambda-insights-extension.rpm https://lambda-insights-extension.s3-ap-northeast-1.amazonaws.com/amazon_linux/lambda-insights-extension.rpm \
-  && rpm2cpio lambda-insights-extension.rpm | cpio -idmv \
-  && mv opt/* /opt/ \
-  && rm -rf lambda-insights-extension.rpm
-
 # Install AWS cli
 ARG AWS_CLI_VERSION="2.4.5"
-RUN wget -O awscliv2.zip https://awscli.amazonaws.com/awscli-exe-linux-x86_64-${AWS_CLI_VERSION}.zip \
+RUN wget -O awscliv2.zip https://awscli.amazonaws.com/awscli-exe-linux-aarch64-${AWS_CLI_VERSION}.zip \
   && unzip awscliv2.zip \
   && aws/install \
   && rm -rf \
