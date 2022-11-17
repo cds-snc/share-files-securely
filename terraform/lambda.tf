@@ -1,5 +1,6 @@
 module "share_files_securely_lambda" {
-  source                 = "github.com/cds-snc/terraform-modules?ref=v3.0.18//lambda"
+  source                 = "github.com/cds-snc/terraform-modules?ref=v4.0.1//lambda"
+  architectures          = ["arm64"]
   name                   = "share_files_securely"
   billing_tag_value      = var.billing_code
   ecr_arn                = aws_ecr_repository.share_files_securely.arn
