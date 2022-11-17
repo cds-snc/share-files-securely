@@ -46,12 +46,7 @@ jobs:
           --platform=linux/arm64 \
           -t $REGISTRY/share-files-securely:$GITHUB_SHA \
           -t $REGISTRY/share-files-securely:latest .
-
-      - name: Push containers to Amazon ECR
-        working-directory: ./app
-        run: |
-          docker push $REGISTRY/share-files-securely:$GITHUB_SHA
-          docker push $REGISTRY/share-files-securely:latest
+          --push
 
       - name: Deploy lambda
         run: |
