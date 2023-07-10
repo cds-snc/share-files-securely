@@ -1,5 +1,5 @@
 module "share_files_securely_lambda" {
-  source                 = "github.com/cds-snc/terraform-modules?ref=v4.0.1//lambda"
+  source                 = "github.com/cds-snc/terraform-modules//lambda?ref=v6.1.1"
   architectures          = ["arm64"]
   name                   = "share_files_securely"
   billing_tag_value      = var.billing_code
