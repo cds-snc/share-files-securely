@@ -8,7 +8,7 @@ resource "aws_rds_cluster" "share_files_securely" {
   cluster_identifier     = "share-files-securely"
   engine                 = "aurora-postgresql"
   engine_mode            = "provisioned"
-  engine_version         = "13.6"
+  engine_version         = "13.8"
   database_name          = "share_files_securely"
   master_username        = "share_files"
   master_password        = random_password.password.result
