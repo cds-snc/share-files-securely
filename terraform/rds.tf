@@ -14,6 +14,7 @@ resource "aws_rds_cluster" "share_files_securely" {
   master_password        = random_password.password.result
   db_subnet_group_name   = aws_db_subnet_group.share_files_securely.name
   vpc_security_group_ids = [aws_security_group.share_files_securely_lambda.id]
+  storage_encrypted      = true
 
   serverlessv2_scaling_configuration {
     max_capacity = 1.0
