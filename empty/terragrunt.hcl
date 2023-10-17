@@ -1,7 +1,3 @@
-terraform {
-  source = "."
-}
-
 locals {
   billing_code = "share-files-securely"
 }
