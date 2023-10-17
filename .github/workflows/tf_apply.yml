@@ -38,6 +38,6 @@ jobs:
           aws-region: "ca-central-1"
 
       - name: Terraform Apply
-        working-directory: empty
+        working-directory: terraform
         run: |
           terragrunt apply --terragrunt-non-interactive -auto-approve
